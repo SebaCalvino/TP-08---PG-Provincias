@@ -1,0 +1,34 @@
+CREATE TABLE provincias (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    full_name VARCHAR(150) NOT NULL,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    display_order INTEGER
+);
+INSERT INTO provincias (name, full_name, latitude, longitude, display_order)
+VALUES 
+    ('Buenos Aires', 'Provincia de Buenos Aires', -36.6769, -60.5588, 10),
+    ('CABA', 'Ciudad Autónoma de Buenos Aires', -34.6037, -58.3816, 20),
+    ('Catamarca', 'Provincia de Catamarca', -27.3669, -66.6231, 30),
+    ('Chaco Provincia', 'Provincia de Chaco', -24.895086288452148, -59.93218994140625, 40),
+    ('Chubut', 'Provincia del Chubut', -43.3002, -68.5267, 50),
+    ('Córdoba', 'Provincia de Córdoba', -31.5375, -65.1449, 60),
+    ('Corrientes', 'Provincia de Corrientes', -28.7743, -57.8012, 70),
+    ('Entre Ríos', 'Provincia de Entre Ríos', -31.7746, -59.5312, 80),
+    ('Formosa', 'Provincia de Formosa', -24.8949, -60.5284, 90),
+    ('Jujuy', 'Provincia de Jujuy', -23.3150, -65.7516, 100),
+    ('La Pampa', 'Provincia de La Pampa', -37.1316, -65.4466, 110),
+    ('La Rioja', 'Provincia de La Rioja', -29.6858, -67.1817, 120),
+    ('Mendoza', 'Provincia de Mendoza', -34.6299, -68.5831, 130),
+    ('Misiones', 'Provincia de Misiones', -26.8754, -54.6517, 140),
+    ('Neuquén', 'Provincia del Neuquén', -38.6417, -70.1186, 150),
+    ('Río Negro', 'Provincia de Río Negro', -40.3346, -67.1423, 160),
+    ('Salta', 'Provincia de Salta', -24.8912, -65.2505, 170),
+    ('San Juan', 'Provincia de San Juan', -30.8654, -68.8895, 180),
+    ('San Luis', 'Provincia de San Luis', -33.7366, -66.0374, 190),
+    ('Santa Cruz', 'Provincia de Santa Cruz', -48.8155, -69.9557, 200),
+    ('Santa Fe', 'Provincia de Santa Fe', -30.7011, -60.9463, 210),
+    ('Santiago del Estero', 'Provincia de Santiago del Estero', -27.7824, -63.2524, 220),
+    ('Tierra del Fuego', 'Provincia de Tierra del Fuego, Antártida e Islas del Atlántico Sur', -54.1194, -66.8373, 230),
+    ('Tucumán', 'Provincia de Tucumán', -26.9482, -65.3648, 240);
