@@ -1,43 +1,46 @@
-// Simple in-memory repository to satisfy endpoints during development.
-// Replace with real DB implementation when ready.
+import LogHelper from './../helpers/log-helper.js'
+
 
 export default class ProvinceRepository {
 
-    constructor(){
-        this._data = [
-            { id: 1, name: 'Buenos Aires', full_name: 'Provincia de Buenos Aires', latitude: -34.6037, longitude: -58.3816, display_order: 1 },
-            { id: 2, name: 'Córdoba', full_name: 'Provincia de Córdoba', latitude: -31.4167, longitude: -64.1833, display_order: 2 }
-        ];
-        this._nextId = 3;
-    }
-
-    getAllAsync = async () => {
-        return [...this._data];
-    }
+   
 
     getByIdAsync = async (id) => {
-        const i = this._data.findIndex(p => p.id === id);
-        return i === -1 ? null : { ...this._data[i] };
-    }
 
-    insertAsync = async (entity) => {
-        const newEntity = { ...entity, id: this._nextId++ };
-        this._data.push(newEntity);
-        return newEntity;
-    }
+        let returnEntity = null;
 
-    updateAsync = async (entity) => {
-        const i = this._data.findIndex(p => p.id === entity.id);
-        if (i === -1) return null;
-        this._data[i] = { ...this._data[i], ...entity };
-        return { ...this._data[i] };
-    }
+        const client = new Client(DBConfig);
 
-    deleteAsync = async (id) => {
-        const i = this._data.findIndex(p => p.id === id);
-        if (i === -1) return false;
-        this._data.splice(i,1);
-        return true;
+        try {
+
+            // Obtengo el Cliente y me conecto a la base de datos.
+
+            client = await client.connect();
+
+            const sql = `SELECT * FROM provinces WHERE id=$1`;
+
+            const values = [id];
+
+            const result = await client.query(sql, values);
+
+            if (result.rows.length > 0){
+
+                returnEntity = result.rows[0];
+
+            }
+
+        } catch (error) {
+
+            LogHelper.logError(error); // Esto funciona si hicieron la clase!
+
+        } finally {
+
+            await client.end();
+
+        }
+
+        return returnEntity;
+
     }
 
 }
