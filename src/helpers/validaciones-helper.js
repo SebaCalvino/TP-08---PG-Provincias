@@ -11,9 +11,9 @@ class LogHelper {
 
         this.fileName            = process.env.LOG_FILE_NAME;
 
-        this.logToFileEnabled    = process.env.LOG_TO_FILE_ENABLED.toLowerCase() === 'true';
+        this.logToFileEnabled    = process.env.LOG_TO_FILE_ENABLED?.toLowerCase() === 'true';
 
-        this.logToConsoleEnabled = process.env.LOG_TO_CONSOLE_ENABLED.toLowerCase() === 'true';
+        this.logToConsoleEnabled = process.env.LOG_TO_CONSOLE_ENABLED?.toLowerCase() === 'true';
 
     }
 

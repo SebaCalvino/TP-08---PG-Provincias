@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provincias API</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    padding: 2rem;
+    line-height: 1.5;
+  }
+  h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .subtitle { color: #6e6e73; margin-bottom: 2rem; font-size: 0.9rem; }
+  h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; max-width: 1100px; }
+  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .card.full { grid-column: 1 / -1; }
+
+  label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 0.25rem; color: #555; }
+  input { width: 100%; padding: 0.5rem 0.65rem; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 0.9rem; margin-bottom: 0.65rem; outline: none; }
+  input:focus { border-color: #0071e3; box-shadow: 0 0 0 3px rgba(0,113,227,0.15); }
+  .row { display: flex; gap: 0.65rem; align-items: end; }
+  .row input { margin-bottom: 0; }
+  .row .btn { white-space: nowrap; margin-bottom: 0; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.5rem 1rem; border: none; border-radius: 8px; font-size: 0.85rem;
+    font-weight: 500; cursor: pointer; color: #fff; background: #0071e3;
+    transition: background 0.15s; margin-bottom: 0.5rem;
+  }
+  .btn:hover { background: #0060c9; }
+  .btn-danger { background: #ff3b30; }
+  .btn-danger:hover { background: #d32f2f; }
+  .btn-outline { background: transparent; color: #0071e3; border: 1px solid #0071e3; }
+  .btn-outline:hover { background: #e8f0fe; }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.5rem 0.65rem; text-align: left; border-bottom: 1px solid #e8e8ed; }
+  th { font-weight: 600; color: #555; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .table-wrap { overflow-x: auto; }
+
+  pre {
+    background: #f5f5f7; border-radius: 8px; padding: 0.75rem 1rem;
+    font-size: 0.8rem; overflow-x: auto; margin-top: 0.5rem; white-space: pre-wrap;
+  }
+  .empty { color: #6e6e73; font-style: italic; font-size: 0.85rem; padding: 0.5rem 0; }
+  .msg { font-size: 0.85rem; margin-top: 0.5rem; }
+  .msg.ok { color: #1d8b3f; }
+  .msg.err { color: #ff3b30; }
+
+  .inline-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+  @media (max-width: 480px) { .inline-group { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Provincias API</h1>
+<p class="subtitle">Interfaz minimalista para consumir los endpoints del API REST</p>
+
+<div class="grid">
+
+  <!-- GET ALL -->
+  <div class="card full">
+    <h2>Ver todas las provincias</h2>
+    <button class="btn" onclick="getAll()">Obtener todas</button>
+    <div id="getAllResult"></div>
+    <div id="getAllTable"></div>
+  </div>
+
+  <!-- GET BY ID -->
+  <div class="card">
+    <h2>Buscar por ID</h2>
+    <div class="row">
+      <input type="number" id="getId" placeholder="ID" min="1">
+      <button class="btn" onclick="getById()">Buscar</button>
+    </div>
+    <div id="getByIdResult"></div>
+  </div>
+
+  <!-- DELETE -->
+  <div class="card">
+    <h2>Eliminar provincia</h2>
+    <div class="row">
+      <input type="number" id="deleteId" placeholder="ID" min="1">
+      <button class="btn btn-danger" onclick="deleteProvincia()">Eliminar</button>
+    </div>
+    <div id="deleteResult" class="msg"></div>
+  </div>
+
+  <!-- CREATE -->
+  <div class="card">
+    <h2>Crear provincia</h2>
+    <form id="createForm" onsubmit="createProvincia(event)">
+      <input name="name" placeholder="Nombre *" required>
+      <input name="full_name" placeholder="Nombre completo *" required>
+      <div class="inline-group">
+        <input name="latitude" placeholder="Latitud" type="number" step="any">
+        <input name="longitude" placeholder="Longitud" type="number" step="any">
+      </div>
+      <input name="display_order" placeholder="Orden" type="number">
+      <button class="btn" type="submit">Crear</button>
+      <div id="createResult" class="msg"></div>
+    </form>
+  </div>
+
+  <!-- UPDATE -->
+  <div class="card">
+    <h2>Actualizar provincia</h2>
+    <form id="updateForm" onsubmit="updateProvincia(event)">
+      <input name="id" placeholder="ID *" type="number" min="1" required>
+      <input name="name" placeholder="Nombre">
+      <input name="full_name" placeholder="Nombre completo">
+      <div class="inline-group">
+        <input name="latitude" placeholder="Latitud" type="number" step="any">
+        <input name="longitude" placeholder="Longitud" type="number" step="any">
+      </div>
+      <input name="display_order" placeholder="Orden" type="number">
+      <button class="btn" type="submit">Actualizar</button>
+      <div id="updateResult" class="msg"></div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+const API = "/provincia";
+
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    ...opts,
+  });
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch { data = text; }
+  return { ok: res.ok, status: res.status, data };
+}
+
+// ----- GET ALL -----
+async function getAll() {
+  const el = document.getElementById("getAllResult");
+  const tbl = document.getElementById("getAllTable");
+  el.innerHTML = "<span class='msg'>Cargando...</span>";
+  const { ok, data } = await apiFetch(API);
+  if (!ok || !Array.isArray(data)) {
+    el.innerHTML = `<span class='msg err'>Error: ${JSON.stringify(data)}</span>`;
+    tbl.innerHTML = "";
+    return;
+  }
+  if (data.length === 0) {
+    el.innerHTML = "<span class='empty'>No hay provincias.</span>";
+    tbl.innerHTML = "";
+    return;
+  }
+  el.innerHTML = `<span class='msg ok'>${data.length} provincia(s) encontrada(s).</span>`;
+  let html = `<div class="table-wrap"><table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Nombre completo</th><th>Latitud</th><th>Longitud</th><th>Orden</th></tr></thead><tbody>`;
+  for (const p of data) {
+    html += `<tr><td>${p.id}</td><td>${esc(p.name)}</td><td>${esc(p.full_name)}</td>
+      <td>${p.latitude ?? "—"}</td><td>${p.longitude ?? "—"}</td><td>${p.display_order ?? "—"}</td></tr>`;
+  }
+  html += "</tbody></table></div>";
+  tbl.innerHTML = html;
+}
+
+// ----- GET BY ID -----
+async function getById() {
+  const id = document.getElementById("getId").value;
+  const el = document.getElementById("getByIdResult");
+  if (!id) { el.innerHTML = "<span class='msg err'>Ingresá un ID.</span>"; return; }
+  const { ok, data, status } = await apiFetch(`${API}/${id}`);
+  if (!ok) {
+    el.innerHTML = `<span class='msg err'>${status} — ${JSON.stringify(data)}</span>`;
+    return;
+  }
+  el.innerHTML = `<pre>${esc(JSON.stringify(data, null, 2))}</pre>`;
+}
+
+// ----- DELETE -----
+async function deleteProvincia() {
+  const id = document.getElementById("deleteId").value;
+  const el = document.getElementById("deleteResult");
+  if (!id) { el.innerHTML = "<span class='msg err'>Ingresá un ID.</span>"; return; }
+  const { ok, data, status } = await apiFetch(`${API}/${id}`, { method: "DELETE" });
+  el.innerHTML = ok
+    ? `<span class='msg ok'>Provincia ${id} eliminada.</span>`
+    : `<span class='msg err'>${status} — ${JSON.stringify(data)}</span>`;
+}
+
+// ----- CREATE -----
+async function createProvincia(e) {
+  e.preventDefault();
+  const el = document.getElementById("createResult");
+  const fd = new FormData(e.target);
+  const body = {};
+  for (const [k, v] of fd) {
+    if (v) body[k] = (k === "latitude" || k === "longitude") ? parseFloat(v) : (k === "display_order" ? parseInt(v, 10) : v);
+  }
+  const { ok, data, status } = await apiFetch(API, { method: "POST", body: JSON.stringify(body) });
+  if (ok) {
+    el.innerHTML = `<span class='msg ok'>Creada con ID: ${JSON.stringify(data)}</span>`;
+    e.target.reset();
+    getAll();
+  } else {
+    el.innerHTML = `<span class='msg err'>${status} — ${JSON.stringify(data)}</span>`;
+  }
+}
+
+// ----- UPDATE -----
+async function updateProvincia(e) {
+  e.preventDefault();
+  const el = document.getElementById("updateResult");
+  const fd = new FormData(e.target);
+  const body = {};
+  let id = null;
+  for (const [k, v] of fd) {
+    if (k === "id") { id = v ? parseInt(v, 10) : null; continue; }
+    if (v) body[k] = (k === "latitude" || k === "longitude") ? parseFloat(v) : (k === "display_order" ? parseInt(v, 10) : v);
+  }
+  if (!id) { el.innerHTML = "<span class='msg err'>ID requerido.</span>"; return; }
+  const { ok, data, status } = await apiFetch(`${API}/${id}`, { method: "PUT", body: JSON.stringify(body) });
+  if (ok) {
+    el.innerHTML = `<span class='msg ok'>Actualizada. Filas afectadas: ${JSON.stringify(data)}</span>`;
+    e.target.reset();
+    getAll();
+  } else {
+    el.innerHTML = `<span class='msg err'>${status} — ${JSON.stringify(data)}</span>`;
+  }
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+window.addEventListener("DOMContentLoaded", getAll);
+</script>
+</body>
+</html>

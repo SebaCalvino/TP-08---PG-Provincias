@@ -8,30 +8,15 @@ import ProvinceRouter from "./src/controllers/province-controller.js"
 
 const app  = express();
 
-const port = 3000;       // El puerto 3000 (http://localhost:3000)
+const port = 3000;
 
+app.use(cors());
 
-// Agrego los Middlewares
+app.use(express.json());
 
-app.use(cors());         // Middleware de CORS.
+app.use(express.static("public"));
 
-app.use(express.json()); // Middleware para parsear y comprender JSON.
-
-
-//
-
-// Endpoints (todos los Routers)
-
-//
-
-app.use("/api/province", ProvinceRouter);
-
-
-//
-
-// Inicio el Server y lo pongo a escuchar.
-
-//
+app.use("/provincia", ProvinceRouter);
 
 app.listen(port, () => {
 
